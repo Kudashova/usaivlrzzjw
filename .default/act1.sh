@@ -1,5 +1,5 @@
 #!/bin/bash
-helpstring1="This is act1 options..............."
+helpstring1="This is act1 options............."
 actionlist1="Меню:\n1. Subaction1\n2. Subactino2\n3. SubacttThreeeeeee\nq. Отмена"
 welcome1="==================\nС Тут Вы можете %%%%%%%% \n\n\n$actionlist1"
 if [ ! -z "$(echo $@ | grep -- '--help')" ]; then
