@@ -45,6 +45,11 @@ main () {
 			"q")
 				exit 0;
 	                      	;;
+			"help")
+				echo -e "$helpstring"
+				read
+				echo -e "\n$actionlist"
+				;;
 			*)
 				echo invalid option; echo -e "\n$actionlist";
 		esac
