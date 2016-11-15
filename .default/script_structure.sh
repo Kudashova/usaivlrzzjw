@@ -1,4 +1,6 @@
 #!/bin/bash
+script_location="$(dirname "$(echo "$(pwd)$(echo "$0" | sed -r s/'^\.'//g)")")"  
+#exit 0;
 helpstring="Script\nOlolo\n"
 actionlist="Главное меню:\n1. %ACTION1%\n2. %ACTION2%\n3. %ACTION3%\nq. Выход из программы"
 welcome="==================\nС помощью данной программы вы можете %ACTIONS%.\n\nРазработчики: Михалева, Кудашова, Казинкина, Калиничева\n\n\n$actionlist"
@@ -14,16 +16,16 @@ fi
 
 
 act1 () {
-	source act1.sh
+	source $script_location/act1.sh
 	act1-1;
 }
 
 act2 ()	{
-        source act2.sh
+        source $script_location/act2.sh
 }
 
 act3 ()	{
-        echo "you chose choice #3"
+        source $script_location/act3.sh
 }
 
 

@@ -16,7 +16,7 @@ echo "Selected option act1-1";
 }
 
 act1-3 () {
-echo "Selected option act1-1";
+read -e -p "Glassfish Path:" GF_DIR;
 }
 
 

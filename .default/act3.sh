@@ -1,4 +1,6 @@
 #!/bin/bash
-act3-1 () {
-echo ololo;
-}
+#ps -aux | less
+pwd
+echo $0
+read -e -p "Variable=" variable
+echo $variable
