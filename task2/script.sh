@@ -7,10 +7,6 @@ act2 ()	{
         source $script_location/act2.sh
 }
 
-act3 ()	{
-        source $script_location/act3.sh
-}
-
 main () {
 	script_location="$(dirname "$(echo "$(pwd)$(echo "$0" | sed -r s/'^\.'//g)")")"
 	helpstring="Usage: script.sh [FILE]...\nУправление безопасностью файлов и каталогов\nПараметры вызова:\n--help	Вывести это сообщение и выйти"
@@ -28,7 +24,7 @@ main () {
 	echo -e "$welcome"
 	while true;
 	do
-		read action
+		if [ -e "$1" ]; then action=1; else read action; fi	#If parameter[1] of script is an existing file/dir -> goto act1; else -> read $action from keyboard
 		case $action in
 			"1")
 				act1;
@@ -47,10 +43,10 @@ main () {
 				echo -e "\n$actionlist"
 				;;
 			*)
-				echo invalid option; echo -e "\n$actionlist";
+				echo Нельзя!; echo -e "\n$actionlist";
 		esac
 	done
 }
 
 
-main $@;
+main "$@";

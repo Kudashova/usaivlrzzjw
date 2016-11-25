@@ -1,5 +1,5 @@
 #!/bin/bash
-act2-1 () {
+act2_1 () {
 echo ololo;
 }
 
@@ -7,4 +7,4 @@ main () {
 	echo plain_text;
 }
 
-main $@;
+main "$@";
