@@ -9,6 +9,7 @@ act2 ()	{
 
 main () {
 	script_location="$( cd "$(dirname $0)" ; pwd -P )"
+	echo "$script_location"
 	helpstring="Usage: script.sh [FILE]...\nУправление безопасностью файлов и каталогов\nПараметры вызова:\n--help	Вывести это сообщение и выйти"
 	actionlist="Главное меню:\n1. Изменить права доступа файла/папки \n2. Поиск файлов, доступных всем пользователям на запись\nq. Выход из программы"
 	welcome="==================\nС помощью данной программы вы можете изменять права доступа файлов/папок, искать файлы, доступные всем пользователям на запись...\n\nРазработчики: 502/Михалева, 502/Кудашова, 502/Казинкина, 502/Калиничева, 502/stdnt-number-three\n\n\n$actionlist"
@@ -21,10 +22,12 @@ main () {
 	        exit 77 #EX_NOPERM
 	fi
 	
+	
+	if [ -e "$1" ]; then echo -e "$welcome"; filename="$1"; echo "Started from file: $filename" act1; fi	#Processing file as a parameter
 	echo -e "$welcome"
 	while true;
 	do
-		if [ -e "$1" ]; then action=1; else read action; fi	#If parameter[1] of script is an existing file/dir -> goto act1; else -> read $action from keyboard
+		read action;
 		case $action in
 			"1")
 				act1;
