@@ -16,6 +16,9 @@ main () {
 	helpstring1="[1..3] - выбор пункта для выполнения [q] - выход на уровень выше\n\n$actionlist1"
 	welcome1="==================\nВ данном меню можно:\nИзменить права доступа, владельца и группу файла, ACL-права \n\n\n$actionlist1"
 	
+	read -e -p "Введите имя файла:" filename;
+	if [[ ! -e "$filename" ]]; then echo -e "Нет такого файла!"; return; fi
+	
 	echo -e "$welcome1"
 	while true;
 	do
