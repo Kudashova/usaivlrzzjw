@@ -16,7 +16,7 @@ case $answer in
 					read answer
 					case $answer in
 						"1")
-							setfacl -m --recursive "u:$username:$permissions" "$filename"
+							setfacl -Rm "u:$username:$permissions" "$filename"
 							;;
 						"2")
 							setfacl -m "u:$username:$permissions" "$filename"
@@ -48,7 +48,7 @@ case $answer in
 					read answer
 					case $answer in
 						"1")
-							setfacl -m --recursive "g:$groupname:$permissions" "$filename"
+							setfacl -Rm "g:$groupname:$permissions" "$filename"
 							;;
 						"2")	
 							setfacl -m "g:$groupname:$permissions" "$filename"
@@ -87,7 +87,7 @@ case $answer in
 				read answer
 				case $answer in
 					"1")
-						setfacl -x --recursive "u:$username" "$filename"
+						setfacl -Rx "u:$username" "$filename"
 						;;
 					"2")
 						setfacl -x "u:$username" "$filename"
@@ -105,7 +105,7 @@ case $answer in
 		;;
 	"2")
 		read -e -p "Имя группы: " groupname;
-		if [[ ! -z "$(getfacl testfile | grep -v --regexp='^#' | grep --regexp='^group'|cut -d':' -f2 | grep "$groupname")" ]]
+		if [[ ! -z "$(getfacl "$filename" | grep -v --regexp='^#' | grep --regexp='^group'|cut -d':' -f2 | grep "$groupname")" ]]
 		then
 			if [[ -d "$filename" ]]
 			then
@@ -113,7 +113,7 @@ case $answer in
 				read answer
 				case $answer in
 					"1")
-						setfacl -x --recursive "g:$groupname" "$filename"
+						setfacl -Rx "g:$groupname" "$filename"
 						;;
 					"2")
 						setfacl -x "g:$groupname" "$filename"
@@ -136,8 +136,89 @@ case $answer in
 }
 
 act1_3_3 () {
-#read -e -p "Glassfish Path:" GF_DIR;
-echo $GF_DIR
+echo -e "Вы хотите изменить разрешения для пользователя или для группы?\n1) Для пользователя\n2) Для группы"
+read answer
+case $answer in
+	"1")
+		read -e -p "Имя пользователя: " username;
+		if [[ ! -z "$(cat /etc/passwd | cut -d':' -f1 | grep "$username")" ]]
+		then
+			if [[ -z "$(getfacl "$filename" | grep -v --regexp='^#' | grep --regexp='^user'|cut -d':' -f2 | grep "$username")" ]]
+			then
+				echo "Старые права доступа не найдены!"
+			else
+				echo "Старые права доступа: [$(getfacl "$filename" | grep --regexp='^user'| grep "$username" | cut -d':' -f3)]"
+			fi
+			read -e -p "Права пользователя [rwx]: " permissions;
+			if [[ ! -z "$(echo "$permissions" | grep --extended-regexp '^[r-]?[w-]?[x-]?$')" ]]
+			then 
+				if [[ -d "$filename" ]]
+				then
+					echo -e "Вы хотите изменить права доступа всем папкам и файлам каталога?\n1) Да\n2) Нет"
+					read answer
+					case $answer in
+						"1")
+							setfacl -Rm "u:$username:$permissions" "$filename"
+							;;
+						"2")
+							setfacl -m "u:$username:$permissions" "$filename"
+							;;
+						*)
+							echo "Ошибка!"
+							;;
+					esac
+				else
+					setfacl -m "u:$username:$permissions" "$filename"
+				fi
+			else
+				echo "Права указаны неверно!"
+			fi
+		else
+			echo "Нет такого пользователя!"
+		fi
+		;;
+	"2")
+		read -e -p "Имя группы: " groupname;
+		if [[ ! -z "$(cat /etc/group | cut -d':' -f1 | grep "$groupname")" ]]
+		then
+			if [[ -z "$(getfacl "$filename" | grep -v --regexp='^#' | grep --regexp='^group'|cut -d':' -f2 | grep "$groupname")" ]]
+			then
+				echo "Старые права доступа не найдены!"
+			else
+				echo "Старые права доступа: [$(getfacl "$filename" | grep --regexp='^group'| grep "$groupname" | cut -d':' -f3)]"
+			fi
+			read -e -p "Права группы [rwx]: " permissions;
+			if [[ ! -z "$(echo "$permissions" | grep --extended-regexp '^[r-]?[w-]?[x-]?$')" ]]
+			then 
+				if [[ -d "$filename" ]]
+				then
+					echo -e "Вы хотите изменить права доступа всем папкам и файлам каталога?\n1) Да\n2) Нет"
+					read answer
+					case $answer in
+						"1")
+							setfacl -Rm "g:$groupname:$permissions" "$filename"
+							;;
+						"2")
+							setfacl -m "g:$groupname:$permissions" "$filename"
+							;;
+						*)
+							echo "Ошибка!"
+							;;
+					esac
+				else
+					setfacl -m "g:$groupname:$permissions" "$filename"
+				fi
+			else
+				echo "Права указаны неверно!"
+			fi
+		else
+			echo "Нет такой группы!"
+		fi
+		;;
+	*)
+		echo "Ошибка!"
+		;;
+	esac
 }
 
 main () {
@@ -159,7 +240,7 @@ main () {
 	                        echo -e "\n$actionlist1_3"
 	                        ;;
 	                "3")
-	                        act1_3_1;
+	                        act1_3_3;
 	                        echo -e "\n$actionlist1_3"
 	                        ;;
 	                "q")
